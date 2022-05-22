@@ -1,10 +1,12 @@
 <script setup>
-import { computed, onMounted } from "vue";
+import { ref, computed, onMounted } from "vue";
 import { useWeatherStore } from "../stores/weather";
 import { useLocationStore } from "../stores/location";
 
 const weatherStore = useWeatherStore();
 const locationStore = useLocationStore();
+
+const search = ref("");
 
 const weather = computed(() => {
   return weatherStore.getWeather;
@@ -14,14 +16,23 @@ const location = computed(() => {
   return locationStore.getLocation;
 });
 
-onMounted(() => {
-  locationStore.fetchLocation({ location: "Brussels, Belgium" });
-  weatherStore.fetchWeather({ lat: 33.44, lon: -94.04, units: "metric" });
-});
+function searchLocation() {
+  locationStore.fetchLocation({ location: search.value }).then(() => {
+    weatherStore.fetchWeather({
+      lat: location.value.lat,
+      lon: location.value.lon,
+      units: "metric",
+    });
+  });
+}
+
+onMounted(() => {});
 </script>
 
 <template>
   <div class="weather">
+    <input placeholder="Search a country or city" v-model="search" />
+    <button @click="searchLocation()">Search</button>
     <p>{{ location.name }}</p>
     <p>{{ weather.basicInfo.description }}</p>
     <p>{{ weather.basicInfo.currentTemperature }}</p>
@@ -33,31 +44,20 @@ onMounted(() => {
     <p>{{ weather.extraInfo.pressure }}</p>
     <p>{{ weather.extraInfo.sunriseTime }}</p>
     <p>{{ weather.extraInfo.sunsetTime }}</p>
-    <p>Basic weather info for the next 7 days</p>
-    <p>Basi weather info for the last 5 days</p>
+    <div>Basic weather info for the next 7 days</div>
+    <ul>
+      <li
+        v-for="(dayInfo, index) in weather.nextSevenDaysBasicInfo"
+        :key="index"
+      >
+        <p>{{ dayInfo.date }}</p>
+        <p>{{ dayInfo.description }}</p>
+        <p>{{ dayInfo.hightTemperature }}</p>
+        <p>{{ dayInfo.lowTemperature }}</p>
+      </li>
+    </ul>
+    <p>Basic weather info for the last 5 days</p>
   </div>
 </template>
 
-<style scoped>
-h1 {
-  font-weight: 500;
-  font-size: 2.6rem;
-  top: -10px;
-}
-
-h3 {
-  font-size: 1.2rem;
-}
-
-.greetings h1,
-.greetings h3 {
-  text-align: center;
-}
-
-@media (min-width: 1024px) {
-  .greetings h1,
-  .greetings h3 {
-    text-align: left;
-  }
-}
-</style>
+<style scoped></style>
