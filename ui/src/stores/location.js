@@ -11,9 +11,10 @@ export const useLocationStore = defineStore({
       lon: "",
       localNames: {},
     },
+    errorMessage: "",
   }),
   getters: {
-    getLocation(state) {
+    getLocationState(state) {
       return state.location;
     },
   },

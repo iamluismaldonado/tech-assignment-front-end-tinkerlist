@@ -6,6 +6,7 @@ export const useWeatherStore = defineStore({
   state: () => ({
     weather: {
       basicInfo: {
+        date: "",
         description: "",
         currentTemperature: "",
         todaysHightTemperature: "",
@@ -21,30 +22,38 @@ export const useWeatherStore = defineStore({
       nextSevenDaysBasicInfo: [],
       lastFiveDaysBasicInfo: [],
     },
+    errorMessage: "",
   }),
   getters: {
-    getWeather(state) {
+    getWeatherState(state) {
       return state.weather;
     },
   },
   actions: {
-    fetchWeather(args) {
+    fetchCurrentWeather(args) {
       return weather
-        .getWeather(args)
+        .getCurrentWeather(args)
         .then((response) => {
+          this.weather.basicInfo.date = response.data.dt;
           this.weather.basicInfo.description =
-            response.data.current.weather[0].description;
-          this.weather.basicInfo.currentTemperature =
-            response.data.current.temp;
+            response.data.current.weather.description;
+          this.weather.basicInfo.currentTemperature = response.data.main.temp;
           this.weather.basicInfo.todaysHightTemperature =
-            response.data.daily[0].temp.max;
+            response.data.main.temp_max;
           this.weather.basicInfo.todaysLowTemperature =
-            response.data.daily[0].temp.min;
-          this.weather.extraInfo.windSpeed = response.data.current.wind_speed;
-          this.weather.extraInfo.humidity = response.data.current.humidity;
-          this.weather.extraInfo.pressure = response.data.current.pressure;
-          this.weather.extraInfo.sunriseTime = response.data.current.sunrise;
-          this.weather.extraInfo.sunsetTime = response.data.current.sunset;
+            response.data.main.temp_min;
+          this.weather.extraInfo.windSpeed = response.data.wind.speed;
+          this.weather.extraInfo.humidity = response.data.main.humidity;
+          this.weather.extraInfo.pressure = response.data.main.pressure;
+          this.weather.extraInfo.sunriseTime = response.data.sys.sunrise;
+          this.weather.extraInfo.sunsetTime = response.data.sys.sunset;
+        })
+        .catch((error) => (this.errorMessage = error));
+    },
+    fetchForecastWeather(args) {
+      return weather
+        .getForecastWeather(args)
+        .then((response) => {
           for (let index = 1; index < response.data.daily.length; index++) {
             const basicInfo = {
               date: response.data.daily[index].dt,
@@ -53,6 +62,21 @@ export const useWeatherStore = defineStore({
               lowTemperature: response.data.daily[index].temp.min,
             };
             this.weather.nextSevenDaysBasicInfo.push(basicInfo);
+          }
+        })
+        .catch((error) => (this.errorMessage = error));
+    },
+    fetchHistoricalWeather(args) {
+      return weather
+        .getHistoricalWeather(args)
+        .then((response) => {
+          for (let index = 0; index < response.data.length; index++) {
+            const basicInfo = {
+              date: response.data[index].current.dt,
+              description: response.data[index].current.weather[0].description,
+              temperature: response.data[index].current.temp,
+            };
+            this.weather.lastFiveDaysBasicInfo.push(basicInfo);
           }
         })
         .catch((error) => (this.errorMessage = error));
