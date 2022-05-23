@@ -36,7 +36,7 @@ export const useWeatherStore = defineStore({
         .then((response) => {
           this.weather.basicInfo.date = response.data.dt;
           this.weather.basicInfo.description =
-            response.data.current.weather.description;
+            response.data.weather[0].description;
           this.weather.basicInfo.currentTemperature = response.data.main.temp;
           this.weather.basicInfo.todaysHightTemperature =
             response.data.main.temp_max;
@@ -51,6 +51,7 @@ export const useWeatherStore = defineStore({
         .catch((error) => (this.errorMessage = error));
     },
     fetchForecastWeather(args) {
+      this.weather.nextSevenDaysBasicInfo = [];
       return weather
         .getForecastWeather(args)
         .then((response) => {
@@ -67,6 +68,7 @@ export const useWeatherStore = defineStore({
         .catch((error) => (this.errorMessage = error));
     },
     fetchHistoricalWeather(args) {
+      this.weather.lastFiveDaysBasicInfo = [];
       return weather
         .getHistoricalWeather(args)
         .then((response) => {
