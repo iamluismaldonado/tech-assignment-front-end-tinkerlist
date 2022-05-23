@@ -30,6 +30,9 @@ export const useWeatherStore = defineStore({
     },
   },
   actions: {
+    clearErrorMessage() {
+      this.errorMessage = "";
+    },
     fetchCurrentWeather(args) {
       return weather
         .getCurrentWeather(args)
@@ -48,7 +51,9 @@ export const useWeatherStore = defineStore({
           this.weather.extraInfo.sunriseTime = response.data.sys.sunrise;
           this.weather.extraInfo.sunsetTime = response.data.sys.sunset;
         })
-        .catch((error) => (this.errorMessage = error));
+        .catch((error) => {
+          this.errorMessage = error.toString();
+        });
     },
     fetchForecastWeather(args) {
       this.weather.nextSevenDaysBasicInfo = [];
@@ -65,7 +70,9 @@ export const useWeatherStore = defineStore({
             this.weather.nextSevenDaysBasicInfo.push(basicInfo);
           }
         })
-        .catch((error) => (this.errorMessage = error));
+        .catch((error) => {
+          this.errorMessage = error.toString();
+        });
     },
     fetchHistoricalWeather(args) {
       this.weather.lastFiveDaysBasicInfo = [];
@@ -81,7 +88,9 @@ export const useWeatherStore = defineStore({
             this.weather.lastFiveDaysBasicInfo.push(basicInfo);
           }
         })
-        .catch((error) => (this.errorMessage = error));
+        .catch((error) => {
+          this.errorMessage = error.toString();
+        });
     },
   },
 });

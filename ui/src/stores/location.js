@@ -19,6 +19,9 @@ export const useLocationStore = defineStore({
     },
   },
   actions: {
+    clearErrorMessage() {
+      this.errorMessage = "";
+    },
     fetchLocation(args) {
       return location
         .getLocation(args)
@@ -29,7 +32,9 @@ export const useLocationStore = defineStore({
           this.location.lon = response.data[0].lon;
           this.location.localNames = response.data[0].local_names;
         })
-        .catch((error) => (this.errorMessage = error));
+        .catch((error) => {
+          this.errorMessage = error.toString();
+        });
     },
   },
 });

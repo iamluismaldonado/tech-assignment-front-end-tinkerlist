@@ -10,8 +10,6 @@ import {
 import { BellIcon, MenuIcon, XIcon } from "@heroicons/vue/outline";
 
 const user = {
-  name: "Tom Cook",
-  email: "tom@example.com",
   imageUrl:
     "https://media-exp1.licdn.com/dms/image/C4D03AQFm89ghveEpiA/profile-displayphoto-shrink_400_400/0/1651971486242?e=1658966400&v=beta&t=oe8M5s9gw6DHa6AkPrtXvT66kTwkeQuxz_TUIydHks0",
 };
