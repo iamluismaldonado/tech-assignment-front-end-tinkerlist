@@ -1,10 +1,12 @@
 <script setup>
-import { ref, computed, onMounted } from "vue";
+import { ref, computed } from "vue";
 import { useWeatherStore } from "../stores/weather";
 import { useLocationStore } from "../stores/location";
 import HeaderBanner from "@/components/HeaderBanner.vue";
 import SearchItem from "./SearchItem.vue";
 import { TabGroup, TabList, Tab, TabPanels, TabPanel } from "@headlessui/vue";
+import ListItem from "./ListItem.vue";
+import TableItem from "./TableItem.vue";
 
 const options = ref(["Basic Info", "Extra Info", "Forecast", "Historical"]);
 
@@ -23,6 +25,71 @@ const location = computed(() => {
 
 const errorMesssage = computed(() => {
   return locationStore.errorMessage || weatherStore.errorMessage;
+});
+
+const basicInfoList = computed(() => {
+  return [
+    {
+      title: "Current Temperature",
+      description: weather.value.basicInfo.currentTemperature,
+    },
+    {
+      title: "Today's Hight Temperature",
+      description: weather.value.basicInfo.todaysHightTemperature,
+    },
+    {
+      title: "Today's Low Temperature",
+      description: weather.value.basicInfo.todaysLowTemperature,
+    },
+  ];
+});
+
+const extraInfoList = computed(() => {
+  return [
+    {
+      title: "Wind Speed",
+      description: weather.value.extraInfo.windSpeed,
+    },
+    {
+      title: "Humidity",
+      description: weather.value.extraInfo.humidity,
+    },
+    {
+      title: "Pressure",
+      description: weather.value.extraInfo.pressure,
+    },
+    {
+      title: "Sunrise Time",
+      description: weather.value.extraInfo.sunriseTime,
+    },
+    {
+      title: "Sunset Time",
+      description: weather.value.extraInfo.sunsetTime,
+    },
+  ];
+});
+
+const tableForecast = computed(() => {
+  return {
+    items: weather.value.nextSevenDaysBasicInfo,
+    columns: [
+      { id: "date", title: "Date" },
+      { id: "description", title: "Description" },
+      { id: "hightTemperature", title: "Hight Temp" },
+      { id: "lowTemperature", title: "Low Temp" },
+    ],
+  };
+});
+
+const tableHistorical = computed(() => {
+  return {
+    items: weather.value.lastFiveDaysBasicInfo,
+    columns: [
+      { id: "date", title: "Date" },
+      { id: "description", title: "Description" },
+      { id: "temperature", title: "Temp" },
+    ],
+  };
 });
 
 function searchLocation(search) {
@@ -56,7 +123,6 @@ function closeBanner() {
   locationStore.clearErrorMessage();
   weatherStore.clearErrorMessage();
 }
-onMounted(() => {});
 </script>
 
 <template>
@@ -80,7 +146,6 @@ onMounted(() => {});
             {{ weather.basicInfo.description }}
           </p>
         </div>
-
         <div class="w-full px-4">
           <TabGroup>
             <TabList class="flex space-x-1 rounded-xl bg-indigo-500 p-1">
@@ -111,46 +176,7 @@ onMounted(() => {});
                   'ring-white ring-opacity-60 ring-offset-2 ring-offset-blue-400 focus:outline-none focus:ring-2',
                 ]"
               >
-                <div class="border-t border-gray-200">
-                  <dl>
-                    <div
-                      class="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6"
-                    >
-                      <dt class="text-sm font-medium text-gray-500">
-                        Current Temperature
-                      </dt>
-                      <dd
-                        class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2"
-                      >
-                        {{ weather.basicInfo.currentTemperature }}
-                      </dd>
-                    </div>
-                    <div
-                      class="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6"
-                    >
-                      <dt class="text-sm font-medium text-gray-500">
-                        Today's Hight Temperature
-                      </dt>
-                      <dd
-                        class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2"
-                      >
-                        {{ weather.basicInfo.todaysHightTemperature }}
-                      </dd>
-                    </div>
-                    <div
-                      class="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6"
-                    >
-                      <dt class="text-sm font-medium text-gray-500">
-                        Today's Low Temperature
-                      </dt>
-                      <dd
-                        class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2"
-                      >
-                        {{ weather.basicInfo.todaysLowTemperature }}
-                      </dd>
-                    </div>
-                  </dl>
-                </div>
+                <ListItem :list="basicInfoList"></ListItem>
               </TabPanel>
               <TabPanel
                 :class="[
@@ -158,70 +184,7 @@ onMounted(() => {});
                   'ring-white ring-opacity-60 ring-offset-2 ring-offset-blue-400 focus:outline-none focus:ring-2',
                 ]"
               >
-                <div class="border-t border-gray-200">
-                  <dl>
-                    <div
-                      class="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6"
-                    >
-                      <dt class="text-sm font-medium text-gray-500">
-                        Wind Speed
-                      </dt>
-                      <dd
-                        class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2"
-                      >
-                        {{ weather.extraInfo.windSpeed }}
-                      </dd>
-                    </div>
-                    <div
-                      class="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6"
-                    >
-                      <dt class="text-sm font-medium text-gray-500">
-                        Humidity
-                      </dt>
-                      <dd
-                        class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2"
-                      >
-                        {{ weather.extraInfo.humidity }}
-                      </dd>
-                    </div>
-                    <div
-                      class="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6"
-                    >
-                      <dt class="text-sm font-medium text-gray-500">
-                        Pressure
-                      </dt>
-                      <dd
-                        class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2"
-                      >
-                        {{ weather.extraInfo.pressure }}
-                      </dd>
-                    </div>
-                    <div
-                      class="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6"
-                    >
-                      <dt class="text-sm font-medium text-gray-500">
-                        Sunrise Time
-                      </dt>
-                      <dd
-                        class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2"
-                      >
-                        {{ weather.extraInfo.sunriseTime }}
-                      </dd>
-                    </div>
-                    <div
-                      class="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6"
-                    >
-                      <dt class="text-sm font-medium text-gray-500">
-                        Sunset Time
-                      </dt>
-                      <dd
-                        class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2"
-                      >
-                        {{ weather.extraInfo.sunsetTime }}
-                      </dd>
-                    </div>
-                  </dl>
-                </div>
+                <ListItem :list="extraInfoList"></ListItem>
               </TabPanel>
               <TabPanel
                 :class="[
@@ -233,39 +196,7 @@ onMounted(() => {});
                   Basic weather info for the next 7 days
                 </h3>
 
-                <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
-                  <table class="w-full text-sm text-left text-gray-500">
-                    <thead class="text-xs text-gray-700 uppercase bg-gray-50">
-                      <tr>
-                        <th scope="col" class="px-6 py-3">Date</th>
-                        <th scope="col" class="px-6 py-3">Description</th>
-                        <th scope="col" class="px-6 py-3">Hight Temp</th>
-                        <th scope="col" class="px-6 py-3">Low Temp</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr
-                        v-for="(
-                          dayInfo, index
-                        ) in weather.nextSevenDaysBasicInfo"
-                        :key="index"
-                        class="bg-white border-b"
-                      >
-                        <th
-                          scope="row"
-                          class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap"
-                        >
-                          {{ dayInfo.date }}
-                        </th>
-                        <td class="px-6 py-4">{{ dayInfo.description }}</td>
-                        <td class="px-6 py-4">
-                          {{ dayInfo.hightTemperature }}
-                        </td>
-                        <td class="px-6 py-4">{{ dayInfo.lowTemperature }}</td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </div>
+                <TableItem :list="tableForecast"></TableItem>
               </TabPanel>
               <TabPanel
                 :class="[
@@ -276,35 +207,7 @@ onMounted(() => {});
                 <h3 class="text-md leading-6 font-medium text-gray-900 mb-4">
                   Basic weather info for the last 5 days
                 </h3>
-                <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
-                  <table class="w-full text-sm text-left text-gray-500">
-                    <thead class="text-xs text-gray-700 uppercase bg-gray-50">
-                      <tr>
-                        <th scope="col" class="px-6 py-3">Date</th>
-                        <th scope="col" class="px-6 py-3">Description</th>
-                        <th scope="col" class="px-6 py-3">Temp</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr
-                        v-for="(
-                          dayInfo, index
-                        ) in weather.lastFiveDaysBasicInfo"
-                        :key="index"
-                        class="bg-white border-b"
-                      >
-                        <th
-                          scope="row"
-                          class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap"
-                        >
-                          {{ dayInfo.date }}
-                        </th>
-                        <td class="px-6 py-4">{{ dayInfo.description }}</td>
-                        <td class="px-6 py-4">{{ dayInfo.temperature }}</td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </div>
+                <TableItem :list="tableHistorical"></TableItem>
               </TabPanel>
             </TabPanels>
           </TabGroup>
