@@ -4,6 +4,7 @@ import {
   useDateFormat,
   useAddTemperatureUnit,
   useCapitalize,
+  useAddWindSpeedUnit,
 } from "../helpers";
 
 export const useWeatherStore = defineStore({
@@ -62,9 +63,12 @@ export const useWeatherStore = defineStore({
             response.data.main.temp_min,
             this.unit
           );
-          this.weather.extraInfo.windSpeed = response.data.wind.speed;
-          this.weather.extraInfo.humidity = response.data.main.humidity;
-          this.weather.extraInfo.pressure = response.data.main.pressure;
+          this.weather.extraInfo.windSpeed = useAddWindSpeedUnit(
+            response.data.wind.speed,
+            this.unit
+          );
+          this.weather.extraInfo.humidity = `${response.data.main.humidity}%`;
+          this.weather.extraInfo.pressure = `${response.data.main.pressure}hPa`;
           this.weather.extraInfo.sunriseTime = useDateFormat(
             response.data.sys.sunrise
           );

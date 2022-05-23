@@ -11,6 +11,10 @@ export function useAddTemperatureUnit(temperature, unit) {
   return unit === "metric" ? `${temperature}°C` : `${temperature}°F`;
 }
 
+export function useAddWindSpeedUnit(windSpeed, unit) {
+  return unit === "metric" ? `${windSpeed}m/s` : `${windSpeed}mph`;
+}
+
 export function useCapitalize(word) {
   return word[0].toUpperCase() + word.slice(1);
 }
