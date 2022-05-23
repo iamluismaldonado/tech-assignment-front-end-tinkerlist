@@ -88,9 +88,6 @@ export const useWeatherStore = defineStore({
           for (let index = 1; index < response.data.daily.length; index++) {
             const basicInfo = {
               date: useDateFormat(response.data.daily[index].dt),
-              description: useCapitalize(
-                response.data.daily[index].weather[0].description
-              ),
               hightTemperature: useAddTemperatureUnit(
                 response.data.daily[index].temp.max,
                 this.unit

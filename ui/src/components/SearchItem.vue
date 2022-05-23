@@ -35,21 +35,31 @@ function searchLocation() {
         v-model="search"
       />
     </form>
-    <select
-      v-model="selectedUnit"
-      id="units"
-      class="bg-gray-50 ml-3 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block p-2.5"
-    >
-      <option disabled>Choose a unit</option>
-      <option selected value="metric">Metric: °C, m/s</option>
-      <option value="imperial">Imperial: °F, mph</option>
-    </select>
-    <button
-      class="h-10 px-6 ml-2 font-semibold rounded-md bg-indigo-500 text-white border border-slate-200"
-      type="button"
-      @click="searchLocation()"
-    >
-      Search
-    </button>
+  </div>
+  <div class="flex flex-row">
+    <div class="flex flex-col basis-6/12">
+      <div class="flex flex-row justify-start mx-4 mb-2">
+        <select
+          v-model="selectedUnit"
+          id="units"
+          class="bg-gray-50 border border-gray-300 text-gray-900 text-md rounded-md focus:ring-indigo-500 focus:border-indigo-500 block p-2.5"
+        >
+          <option disabled>Choose a unit</option>
+          <option selected value="metric">Metric: °C, m/s</option>
+          <option value="imperial">Imperial: °F, mph</option>
+        </select>
+      </div>
+    </div>
+    <div class="flex flex-col basis-6/12">
+      <div class="flex flex-row justify-end mx-4 mb-2">
+        <button
+          class="justify-end h-11 px-6 ml-2 font-semibold rounded-md bg-indigo-500 text-white border border-slate-200"
+          type="button"
+          @click="searchLocation()"
+        >
+          Search
+        </button>
+      </div>
+    </div>
   </div>
 </template>

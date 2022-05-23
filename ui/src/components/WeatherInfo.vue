@@ -74,7 +74,6 @@ const tableForecast = computed(() => {
     items: weather.value.nextSevenDaysBasicInfo,
     columns: [
       { id: "date", title: "Date" },
-      { id: "description", title: "Description" },
       { id: "hightTemperature", title: "Hight Temp" },
       { id: "lowTemperature", title: "Low Temp" },
     ],
@@ -159,10 +158,10 @@ function closeBanner() {
                 <button
                   :class="[
                     'w-full rounded-lg py-2.5 text-sm font-medium leading-5 text-blue-700',
-                    'ring-white ring-opacity-60 ring-offset-2 ring-offset-blue-400 focus:outline-none focus:ring-2',
+                    'ring-white ring-opacity-60 ring-offset-2 ring-offset-indigo-400 focus:outline-none focus:ring-2',
                     selected
                       ? 'bg-white shadow'
-                      : 'text-blue-100 hover:bg-white/[0.12] hover:text-white',
+                      : 'text-indigo-100 hover:bg-white/[0.12] hover:text-white',
                   ]"
                 >
                   {{ option }}
@@ -173,7 +172,7 @@ function closeBanner() {
               <TabPanel
                 :class="[
                   'rounded-xl bg-white p-3',
-                  'ring-white ring-opacity-60 ring-offset-2 ring-offset-blue-400 focus:outline-none focus:ring-2',
+                  'ring-white ring-opacity-60 ring-offset-2 ring-offset-indigo-400 focus:outline-none focus:ring-2',
                 ]"
               >
                 <ListItem :list="basicInfoList"></ListItem>
@@ -181,7 +180,7 @@ function closeBanner() {
               <TabPanel
                 :class="[
                   'rounded-xl bg-white p-3',
-                  'ring-white ring-opacity-60 ring-offset-2 ring-offset-blue-400 focus:outline-none focus:ring-2',
+                  'ring-white ring-opacity-60 ring-offset-2 ring-offset-indigo-400 focus:outline-none focus:ring-2',
                 ]"
               >
                 <ListItem :list="extraInfoList"></ListItem>
@@ -189,7 +188,7 @@ function closeBanner() {
               <TabPanel
                 :class="[
                   'rounded-xl bg-white p-3',
-                  'ring-white ring-opacity-60 ring-offset-2 ring-offset-blue-400 focus:outline-none focus:ring-2',
+                  'ring-white ring-opacity-60 ring-offset-2 ring-offset-indigo-400 focus:outline-none focus:ring-2',
                 ]"
               >
                 <h3 class="text-md leading-6 font-medium text-gray-900 mb-4">
@@ -201,7 +200,7 @@ function closeBanner() {
               <TabPanel
                 :class="[
                   'rounded-xl bg-white p-3',
-                  'ring-white ring-opacity-60 ring-offset-2 ring-offset-blue-400 focus:outline-none focus:ring-2',
+                  'ring-white ring-opacity-60 ring-offset-2 ring-offset-indigo-400 focus:outline-none focus:ring-2',
                 ]"
               >
                 <h3 class="text-md leading-6 font-medium text-gray-900 mb-4">

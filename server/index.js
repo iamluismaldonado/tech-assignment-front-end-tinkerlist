@@ -83,7 +83,9 @@ app.get("/historical", async (req, res) => {
   }))).then(([{ data: oneDayAgo }, { data: twoDaysAgo }, { data: threeDaysAgo }, { data: fourDaysAgo }, { data: fiveDaysAgo }]) => {
     const response = [oneDayAgo, twoDaysAgo, threeDaysAgo, fourDaysAgo, fiveDaysAgo];
     res.status(200).json(response);
-  }).catch((err) => res.status(500).json({ message: err }));
+  }).catch((err) => {
+    res.status(500).json({ message: err })
+  })
 });
 
 app.listen(2400, () => {
