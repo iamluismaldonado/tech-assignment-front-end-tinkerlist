@@ -1,5 +1,10 @@
 import { defineStore } from "pinia";
 import weather from "@/api/weather";
+import {
+  useDateFormat,
+  useAddTemperatureUnit,
+  useCapitalize,
+} from "../helpers";
 
 export const useWeatherStore = defineStore({
   id: "weather",
@@ -22,6 +27,7 @@ export const useWeatherStore = defineStore({
       nextSevenDaysBasicInfo: [],
       lastFiveDaysBasicInfo: [],
     },
+    unit: "",
     errorMessage: "",
   }),
   getters: {
@@ -30,6 +36,9 @@ export const useWeatherStore = defineStore({
     },
   },
   actions: {
+    setSelectedUnit(selectedUnit) {
+      this.unit = selectedUnit;
+    },
     clearErrorMessage() {
       this.errorMessage = "";
     },
@@ -38,18 +47,30 @@ export const useWeatherStore = defineStore({
         .getCurrentWeather(args)
         .then((response) => {
           this.weather.basicInfo.date = response.data.dt;
-          this.weather.basicInfo.description =
-            response.data.weather[0].description;
-          this.weather.basicInfo.currentTemperature = response.data.main.temp;
-          this.weather.basicInfo.todaysHightTemperature =
-            response.data.main.temp_max;
-          this.weather.basicInfo.todaysLowTemperature =
-            response.data.main.temp_min;
+          this.weather.basicInfo.description = useCapitalize(
+            response.data.weather[0].description
+          );
+          this.weather.basicInfo.currentTemperature = useAddTemperatureUnit(
+            response.data.main.temp,
+            this.unit
+          );
+          this.weather.basicInfo.todaysHightTemperature = useAddTemperatureUnit(
+            response.data.main.temp_max,
+            this.unit
+          );
+          this.weather.basicInfo.todaysLowTemperature = useAddTemperatureUnit(
+            response.data.main.temp_min,
+            this.unit
+          );
           this.weather.extraInfo.windSpeed = response.data.wind.speed;
           this.weather.extraInfo.humidity = response.data.main.humidity;
           this.weather.extraInfo.pressure = response.data.main.pressure;
-          this.weather.extraInfo.sunriseTime = response.data.sys.sunrise;
-          this.weather.extraInfo.sunsetTime = response.data.sys.sunset;
+          this.weather.extraInfo.sunriseTime = useDateFormat(
+            response.data.sys.sunrise
+          );
+          this.weather.extraInfo.sunsetTime = useDateFormat(
+            response.data.sys.sunset
+          );
         })
         .catch((error) => {
           this.errorMessage = error.toString();
@@ -62,10 +83,18 @@ export const useWeatherStore = defineStore({
         .then((response) => {
           for (let index = 1; index < response.data.daily.length; index++) {
             const basicInfo = {
-              date: response.data.daily[index].dt,
-              description: response.data.daily[index].weather[0].description,
-              hightTemperature: response.data.daily[index].temp.max,
-              lowTemperature: response.data.daily[index].temp.min,
+              date: useDateFormat(response.data.daily[index].dt),
+              description: useCapitalize(
+                response.data.daily[index].weather[0].description
+              ),
+              hightTemperature: useAddTemperatureUnit(
+                response.data.daily[index].temp.max,
+                this.unit
+              ),
+              lowTemperature: useAddTemperatureUnit(
+                response.data.daily[index].temp.min,
+                this.unit
+              ),
             };
             this.weather.nextSevenDaysBasicInfo.push(basicInfo);
           }
@@ -81,9 +110,14 @@ export const useWeatherStore = defineStore({
         .then((response) => {
           for (let index = 0; index < response.data.length; index++) {
             const basicInfo = {
-              date: response.data[index].current.dt,
-              description: response.data[index].current.weather[0].description,
-              temperature: response.data[index].current.temp,
+              date: useDateFormat(response.data[index].current.dt),
+              description: useCapitalize(
+                response.data[index].current.weather[0].description
+              ),
+              temperature: useAddTemperatureUnit(
+                response.data[index].current.temp,
+                this.unit
+              ),
             };
             this.weather.lastFiveDaysBasicInfo.push(basicInfo);
           }

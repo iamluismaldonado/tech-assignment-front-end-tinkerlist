@@ -3,10 +3,10 @@ import { ref, computed } from "vue";
 import { useWeatherStore } from "../stores/weather";
 import { useLocationStore } from "../stores/location";
 import HeaderBanner from "@/components/HeaderBanner.vue";
-import SearchItem from "./SearchItem.vue";
+import SearchItem from "@/components/SearchItem.vue";
 import { TabGroup, TabList, Tab, TabPanels, TabPanel } from "@headlessui/vue";
-import ListItem from "./ListItem.vue";
-import TableItem from "./TableItem.vue";
+import ListItem from "@/components/ListItem.vue";
+import TableItem from "@/components/TableItem.vue";
 
 const options = ref(["Basic Info", "Extra Info", "Forecast", "Historical"]);
 
@@ -92,27 +92,28 @@ const tableHistorical = computed(() => {
   };
 });
 
-function searchLocation(search) {
+function searchLocation(search, unit) {
+  weatherStore.setSelectedUnit(unit);
   locationStore.fetchLocation({ location: search }).then(() => {
     displaySearch.value = true;
     weatherStore
       .fetchCurrentWeather({
         lat: location.value.lat,
         lon: location.value.lon,
-        units: "metric",
+        units: unit,
       })
       .then(() => {
         weatherStore.fetchForecastWeather({
           lat: location.value.lat,
           lon: location.value.lon,
-          units: "metric",
+          units: unit,
         });
       })
       .then(() => {
         weatherStore.fetchHistoricalWeather({
           lat: location.value.lat,
           lon: location.value.lon,
-          units: "metric",
+          units: unit,
           timestamp: weather.value.basicInfo.date,
         });
       });
@@ -134,7 +135,7 @@ function closeBanner() {
   <div class="flex flex-col place-items-center">
     <div class="my-4 mx-4 bg-white shadow overflow-hidden sm:rounded-lg">
       <SearchItem
-        @searchLocation="(search) => searchLocation(search)"
+        @searchLocation="(search, unit) => searchLocation(search, unit)"
       ></SearchItem>
 
       <div v-if="displaySearch">
@@ -168,7 +169,6 @@ function closeBanner() {
                 </button>
               </Tab>
             </TabList>
-
             <TabPanels class="mt-2">
               <TabPanel
                 :class="[

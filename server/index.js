@@ -37,6 +37,7 @@ app.get("/current", async (req, res) => {
         appid: KEY,
         lat: req.query.lat,
         lon: req.query.lon,
+        units: req.query.units
       }
     });
     res.status(200).json(response.data);
